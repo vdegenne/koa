@@ -1,6 +1,7 @@
 import Router from '@koa/router';
 import type {Context, Next} from 'koa';
 import Koa from 'koa';
+import serve from 'koa-static';
 
 // Extend the Koa Request interface to include a 'body' property
 declare module 'koa' {
@@ -39,4 +40,4 @@ function bodyParser() {
 	};
 }
 
-export {Koa, Router, bodyParser};
+export {Koa, Router, serve, bodyParser};
