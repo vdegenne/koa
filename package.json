@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"type": "module",
 	"dependencies": {
 		"@koa/cors": "^5.0.0",

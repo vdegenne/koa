@@ -15,7 +15,10 @@ declare module 'koa' {
  */
 function bodyParser() {
 	return async function (ctx: Context, next: Next): Promise<void> {
-		if (ctx.method === 'POST' && ctx.is('application/json')) {
+		if (
+			(ctx.method === 'POST' || ctx.method === 'PUT') &&
+			ctx.is('application/json')
+		) {
 			const data = await new Promise<string>((resolve, reject) => {
 				let raw = '';
 				ctx.req.on('data', (chunk) => {
