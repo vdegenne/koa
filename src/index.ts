@@ -17,7 +17,10 @@ declare module 'koa' {
 function bodyParser() {
 	return async function (ctx: Context, next: Next): Promise<void> {
 		if (
-			(ctx.method === 'POST' || ctx.method === 'PUT') &&
+			(ctx.method === 'POST' ||
+				ctx.method === 'PUT' ||
+				ctx.method === 'PATCH' ||
+				ctx.method === 'DELETE') &&
 			ctx.is('application/json')
 		) {
 			const data = await new Promise<string>((resolve, reject) => {
