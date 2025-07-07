@@ -52,6 +52,11 @@ export {bodyParser, cors, Koa, Router, serve};
 interface VKoaOptions {
 	port: number;
 
+	/** @default true */
+	useBodyParser?: boolean;
+	/** @default false */
+	useCors?: boolean;
+
 	get?: Array<[string, ...Router.Middleware[]]>;
 	post?: Array<[string, ...Router.Middleware[]]>;
 
@@ -63,6 +68,19 @@ interface VKoaOptions {
 export function config(options: VKoaOptions) {
 	const app = new Koa();
 	const router = new Router();
+
+	if (options.useBodyParser === undefined) {
+		options.useBodyParser = true;
+	}
+	if (options.useBodyParser) {
+		app.use(bodyParser());
+	}
+	if (options.useCors === undefined) {
+		options.useCors = false;
+	}
+	if (options.useCors) {
+		app.use(cors());
+	}
 
 	app.use(bodyParser());
 
