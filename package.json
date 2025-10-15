@@ -20,6 +20,10 @@
 		".": {
 			"default": "./lib/index.js",
 			"types": "./lib/index.d.ts"
+		},
+		"./checkFields.js": {
+			"import": "./lib/checkFields.js",
+			"types": "./lib/checkFields.d.ts"
 		}
 	},
 	"devDependencies": {
