@@ -44,6 +44,9 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 
 			if (!path.startsWith('/')) path = '/' + path;
 
+			// Prefix with apiVersion if provided
+			if (options.apiVersion) path = `/${options.apiVersion}${path}`;
+
 			const middlewares = Array.isArray(middlewareOrMiddlewares)
 				? (middlewareOrMiddlewares as Middleware[])
 				: [middlewareOrMiddlewares as Middleware];

@@ -26,6 +26,11 @@ export type TypedRouteDefinitions<
 
 // Generic VKoa options
 export interface VKoaOptions<ApiShape = any> {
+	/**
+	 * Api version, will get prepended to all routes defined
+	 */
+	apiVersion?: string;
+
 	port: number;
 
 	useBodyParser?: boolean;
