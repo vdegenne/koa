@@ -14,7 +14,7 @@ export function bodyParser() {
 			});
 
 			try {
-				ctx.request.body = JSON.parse(data);
+				(ctx.request as any).body = JSON.parse(data);
 			} catch {
 				ctx.throw(400, 'Invalid JSON');
 			}

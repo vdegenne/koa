@@ -3,11 +3,11 @@ import type {Context, Middleware, Next} from 'koa';
 
 export {Context, Next};
 
-declare module 'koa' {
-	interface Request {
-		body?: any;
-	}
-}
+// declare module 'koa' {
+// 	interface Request<T = any> {
+// 		body?: T;
+// 	}
+// }
 
 // ---------------------- Basic Koa types ----------------------
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
@@ -16,7 +16,6 @@ export type RouteHandler = Middleware;
 // Route definitions: object syntax only
 export type RouteDefinitions = Record<string, RouteHandler | RouteHandler[]>;
 
-// ---------------------- VKoa options ----------------------
 // Generic version of RouteDefinitions
 export type TypedRouteDefinitions<
 	T extends Record<string, Endpoint<any, any>>,
