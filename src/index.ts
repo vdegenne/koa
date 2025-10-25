@@ -11,7 +11,7 @@ import type {
 	VKoaOptions,
 } from './types.js';
 
-export function config(options: VKoaOptions) {
+export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const app = new Koa();
 	const router = new Router();
 
