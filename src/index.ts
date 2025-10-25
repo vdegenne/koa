@@ -1,6 +1,7 @@
 import cors from '@koa/cors';
 import Router from '@koa/router';
 import Koa from 'koa';
+import mount from 'koa-mount';
 import serve from 'koa-static';
 import {bodyParser} from './bodyParser.js';
 import type {
@@ -31,7 +32,15 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 
 	if (options.useBodyParser ?? true) app.use(bodyParser());
 	if (options.useCors ?? false) app.use(cors());
-	if (options.staticDir) app.use(serve(options.staticDir));
+	if (options.statics && Array.isArray(options.statics)) {
+		for (const folder of options.statics) {
+			if (typeof folder === 'string') {
+				app.use(serve(folder));
+			} else if (folder.prefix && folder.location) {
+				app.use(mount(folder.prefix, serve(folder.location)));
+			}
+		}
+	}
 	if (options.middlewares) for (const m of options.middlewares) app.use(m);
 
 	const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];

@@ -24,6 +24,11 @@ export type TypedRouteDefinitions<
 	) => T[K]['response'] | Promise<T[K]['response']>;
 };
 
+interface StaticMount {
+	prefix: string;
+	location: string;
+}
+
 // Generic VKoa options
 export interface VKoaOptions<ApiShape = any> {
 	/**
@@ -35,7 +40,7 @@ export interface VKoaOptions<ApiShape = any> {
 
 	useBodyParser?: boolean;
 	useCors?: boolean;
-	staticDir?: string;
+	statics?: (string | StaticMount)[];
 
 	// Constrain inferred type to Endpoint map
 	get?: ApiShape extends {
