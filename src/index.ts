@@ -1,13 +1,14 @@
 import cors from '@koa/cors';
 import Router from '@koa/router';
-import type {Context, Next} from 'koa';
 import Koa from 'koa';
 import serve from 'koa-static';
 import {bodyParser} from './bodyParser.js';
 import type {
+	Context,
 	HttpMethod,
+	Middleware,
+	Next,
 	RouteDefinitions,
-	RouteHandler,
 	VKoaOptions,
 } from './types.js';
 
@@ -38,21 +39,22 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 		const routes = options[method] as RouteDefinitions | undefined;
 		if (!routes) continue;
 
-		for (const path in routes) {
-			const handlers = Array.isArray(routes[path])
-				? routes[path].map((handler) => async (ctx: Context, next: Next) => {
-						const result = await handler(ctx, next);
-						if (result !== undefined && ctx.body === undefined)
-							ctx.body = result;
-					})
-				: [
-						async (ctx: Context, next: Next) => {
-							const result = await (routes[path] as RouteHandler)(ctx, next);
-							if (result !== undefined && ctx.body === undefined)
-								ctx.body = result;
-						},
-					];
-			router[method](path, ...handlers);
+		for (let path in routes) {
+			const middlewareOrMiddlewares = routes[path];
+
+			if (!path.startsWith('/')) path = '/' + path;
+
+			const middlewares = Array.isArray(middlewareOrMiddlewares)
+				? (middlewareOrMiddlewares as Middleware[])
+				: [middlewareOrMiddlewares as Middleware];
+
+			const wrappedMiddlewares = middlewares.map(
+				(middleware) => async (ctx: Context, next: Next) => {
+					const result = await middleware(ctx, next);
+					if (result !== undefined && ctx.body === undefined) ctx.body = result;
+				},
+			);
+			router[method](path, ...wrappedMiddlewares);
 		}
 	}
 

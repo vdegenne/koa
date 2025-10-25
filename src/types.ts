@@ -1,7 +1,7 @@
 import type {Endpoint} from '@vdegenne/mini-rest';
 import type {Context, Middleware, Next} from 'koa';
 
-export {Context, Next};
+export {Context, Middleware, Next};
 
 // declare module 'koa' {
 // 	interface Request<T = any> {
@@ -9,12 +9,10 @@ export {Context, Next};
 // 	}
 // }
 
-// ---------------------- Basic Koa types ----------------------
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
-export type RouteHandler = Middleware;
 
 // Route definitions: object syntax only
-export type RouteDefinitions = Record<string, RouteHandler | RouteHandler[]>;
+export type RouteDefinitions = Record<string, Middleware | Middleware[]>;
 
 // Generic version of RouteDefinitions
 export type TypedRouteDefinitions<
