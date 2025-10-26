@@ -3,7 +3,6 @@ import Router from '@koa/router';
 import Koa from 'koa';
 import mount from 'koa-mount';
 import serve from 'koa-static';
-import {bodyParser} from './bodyParser.js';
 import {FieldsGuard} from './FieldsGuard.js';
 import type {
 	Context,
@@ -14,6 +13,7 @@ import type {
 	RouteDefinitions,
 	VKoaOptions,
 } from './types.js';
+import {bodyParser} from './middlewares/bodyParser.js';
 
 const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 

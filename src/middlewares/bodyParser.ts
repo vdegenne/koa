@@ -1,4 +1,4 @@
-import type {Context, Next} from './types.js';
+import type {Context, Next} from '../types.js';
 
 export function bodyParser() {
 	return async function (ctx: Context, next: Next): Promise<void> {
