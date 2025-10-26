@@ -8,16 +8,16 @@ const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mkv'];
 
 export function video(baseDirs: string[]) {
 	return async function (ctx: Context, next: Next) {
-		const requestedPath = ctx.path;
+		const requestedFilename = pathlib.basename(ctx.path);
 
 		// Check extension
-		const ext = pathlib.extname(requestedPath).toLowerCase();
+		const ext = pathlib.extname(requestedFilename).toLowerCase();
 		if (!VIDEO_EXTENSIONS.includes(ext)) return next();
 
 		// Find the file in the base directories
 		let filePath: string | null = null;
 		for (const dir of baseDirs) {
-			const fullPath = pathlib.join(dir, requestedPath);
+			const fullPath = pathlib.join(dir, requestedFilename);
 			if (fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
 				filePath = fullPath;
 				break;
