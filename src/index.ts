@@ -4,8 +4,8 @@ import Koa from 'koa';
 import mount from 'koa-mount';
 import serve from 'koa-static';
 import {FieldsGuard} from './FieldsGuard.js';
+import {bodyParser} from './middlewares/bodyParser.js';
 import type {
-	Context,
 	HttpMethod,
 	Middleware,
 	Next,
@@ -13,7 +13,6 @@ import type {
 	RouteDefinitions,
 	VKoaOptions,
 } from './types.js';
-import {bodyParser} from './middlewares/bodyParser.js';
 
 const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -45,7 +44,15 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 			}
 		}
 	}
-	if (options.middlewares) for (const m of options.middlewares) app.use(m);
+	if (options.middlewares)
+		for (const m of options.middlewares) {
+			if (!m) return;
+			if (options.apiVersion) {
+				app.use(mount(`/${options.apiVersion}`, m));
+			} else {
+				app.use(m);
+			}
+		}
 
 	for (const method of methods) {
 		const routes = options[method] as RouteDefinitions | undefined;

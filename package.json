@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.15",
+	"version": "0.1.16",
 	"type": "module",
 	"files": [
 		"./lib/"
@@ -19,7 +19,7 @@
 			"import": "./lib/FieldsGuard.js",
 			"types": "./lib/FieldsGuard.d.ts"
 		},
-		"./middlewares/*": {
+		"./middlewares/*.js": {
 			"import": "./lib/middlewares/*.js",
 			"types": "./lib/middlewares/*.d.ts"
 		},
