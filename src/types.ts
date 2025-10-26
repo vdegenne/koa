@@ -1,7 +1,6 @@
 import type {Endpoint} from '@vdegenne/mini-rest';
-import type {Context, Middleware, Next} from 'koa';
-
-export {Context, Middleware, Next};
+import type {Context, Middleware as KoaMiddleware, Next} from 'koa';
+import type {FieldsGuard} from './FieldsGuard.js';
 
 // declare module 'koa' {
 // 	interface Request<T = any> {
@@ -9,19 +8,25 @@ export {Context, Middleware, Next};
 // 	}
 // }
 
+export {Context, Next};
+
+export type RequestContext<Req = any> = Context & {request: {body: Req}};
+
 export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 // Route definitions: object syntax only
 export type RouteDefinitions = Record<string, Middleware | Middleware[]>;
 
-// Generic version of RouteDefinitions
+export type Middleware<Req = any, Res = any> = (opts: {
+	ctx: RequestContext<Req>;
+	next: Next;
+	guard: FieldsGuard<Req>['check'];
+}) => Res | Promise<Res>;
+
 export type TypedRouteDefinitions<
 	T extends Record<string, Endpoint<any, any>>,
 > = {
-	[K in keyof T]: (
-		ctx: Context & {request: {body: T[K]['request']}},
-		next: Next,
-	) => T[K]['response'] | Promise<T[K]['response']>;
+	[K in keyof T]: Middleware<T[K]['request'], T[K]['response']>;
 };
 
 interface StaticMount {
@@ -69,7 +74,7 @@ export interface VKoaOptions<ApiShape = any> {
 		? TypedRouteDefinitions<D>
 		: undefined;
 
-	middlewares?: Middleware[];
+	middlewares?: KoaMiddleware[];
 	onError?: (err: unknown, ctx: Context) => void;
 	onStart?: () => void | Promise<void>;
 }

@@ -4,14 +4,18 @@ import Koa from 'koa';
 import mount from 'koa-mount';
 import serve from 'koa-static';
 import {bodyParser} from './bodyParser.js';
+import {FieldsGuard} from './FieldsGuard.js';
 import type {
 	Context,
 	HttpMethod,
 	Middleware,
 	Next,
+	RequestContext,
 	RouteDefinitions,
 	VKoaOptions,
 } from './types.js';
+
+const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
 export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const app = new Koa();
@@ -43,7 +47,6 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	}
 	if (options.middlewares) for (const m of options.middlewares) app.use(m);
 
-	const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 	for (const method of methods) {
 		const routes = options[method] as RouteDefinitions | undefined;
 		if (!routes) continue;
@@ -61,9 +64,14 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				: [middlewareOrMiddlewares as Middleware];
 
 			const wrappedMiddlewares = middlewares.map(
-				(middleware) => async (ctx: Context, next: Next) => {
-					const result = await middleware(ctx, next);
+				(middleware) => async (ctx: RequestContext, next: Next) => {
+					const guardManager = new FieldsGuard({ctx});
+					const guard = guardManager.check.bind(guardManager);
+					const result = await middleware({ctx, next, guard});
 					if (result !== undefined && ctx.body === undefined) ctx.body = result;
+					if (ctx.body === undefined) {
+						ctx.body = '';
+					}
 				},
 			);
 			router[method](path, ...wrappedMiddlewares);
