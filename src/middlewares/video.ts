@@ -8,7 +8,7 @@ const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mkv'];
 
 export function video(baseDirs: string[]) {
 	return async function (ctx: Context, next: Next) {
-		const requestedFilename = pathlib.basename(ctx.path);
+		const requestedFilename = pathlib.basename(decodeURIComponent(ctx.path));
 
 		// Check extension
 		const ext = pathlib.extname(requestedFilename).toLowerCase();
