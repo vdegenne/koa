@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.16",
+	"version": "0.1.17",
 	"type": "module",
 	"files": [
 		"./lib/"
@@ -43,7 +43,8 @@
 		"@types/koa-static": "^4.0.4",
 		"koa": "^3.0.0",
 		"koa-mount": "^4.2.0",
-		"koa-static": "^5.0.0"
+		"koa-static": "^5.0.0",
+		"mime": "^4.1.0"
 	},
 	"scripts": {
 		"build": "wireit"

@@ -16,6 +16,7 @@ import type {
 
 const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
+// TODO: accept an array of configs instead of one
 export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const app = new Koa();
 	const router = new Router();

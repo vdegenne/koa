@@ -34,7 +34,7 @@ export function video(baseDirs: string[]) {
 		const fileSize = stat.size;
 		const range = ctx.headers.range;
 
-		const contentType = mime.lookup(filePath) || 'application/octet-stream';
+		const contentType = mime.getType(filePath) || 'application/octet-stream';
 
 		if (!range) {
 			ctx.status = 200;
