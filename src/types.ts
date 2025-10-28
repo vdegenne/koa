@@ -44,6 +44,7 @@ export interface VKoaOptions<ApiShape = any> {
 
 	port: number;
 
+	/** @default true */
 	useBodyParser?: boolean;
 	useCors?: boolean;
 	statics?: (string | StaticMount)[];
