@@ -45,6 +45,10 @@ export class FieldsGuard<T> {
 		const {required} = options;
 		const body = context.request.body as Record<string, unknown>;
 
+		if (body === undefined) {
+			throw new Error('No body found.');
+		}
+
 		for (const key of required) {
 			if (!(key in body)) {
 				context.throw(400, `Missing required field: ${String(key)}`);

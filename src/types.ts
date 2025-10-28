@@ -21,7 +21,8 @@ export type Middleware<Req = any, Res = any> = (opts: {
 	ctx: RequestContext<Req>;
 	next: Next;
 	guard: FieldsGuard<Req>['check'];
-}) => Res | Promise<Res>;
+	params: Record<string, string>;
+}) => Res | undefined | Promise<Res | undefined>;
 
 export type TypedRouteDefinitions<
 	T extends Record<string, Endpoint<any, any>>,

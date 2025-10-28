@@ -21,18 +21,18 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const app = new Koa();
 	const router = new Router();
 
-	app.use(async (ctx, next) => {
-		try {
-			await next();
-		} catch (err) {
-			if (options.onError) options.onError(err, ctx);
-			else {
-				ctx.status = ctx.status || 500;
-				ctx.body = {error: (err as Error).message};
-				console.error(err);
-			}
-		}
-	});
+	// app.use(async (ctx, next) => {
+	// 	try {
+	// 		await next();
+	// 	} catch (err) {
+	// 		if (options.onError) options.onError(err, ctx);
+	// 		else {
+	// 			ctx.status = ctx.status || 500;
+	// 			ctx.body = {error: (err as Error).message};
+	// 			console.error(err);
+	// 		}
+	// 	}
+	// });
 
 	if (options.useBodyParser ?? true) app.use(bodyParser());
 	if (options.useCors ?? false) app.use(cors());
@@ -75,11 +75,14 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				(middleware) => async (ctx: RequestContext, next: Next) => {
 					const guardManager = new FieldsGuard({ctx});
 					const guard = guardManager.check.bind(guardManager);
-					const result = await middleware({ctx, next, guard});
+					const params = ctx.params;
+					const result = await middleware({ctx, next, guard, params});
 					if (result !== undefined && ctx.body === undefined) ctx.body = result;
 					if (ctx.body === undefined) {
-						ctx.body = '';
+						// TODO: not sure about that
+						// ctx.body = '';
 					}
+					// await next();
 				},
 			);
 			router[method](path, ...wrappedMiddlewares);
