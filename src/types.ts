@@ -1,3 +1,4 @@
+import type {Logger} from '@vdegenne/debug';
 import type {Endpoint} from '@vdegenne/mini-rest';
 import type {Context, Middleware as KoaMiddleware, Next} from 'koa';
 import type {FieldsGuard} from './FieldsGuard.js';
@@ -48,6 +49,9 @@ export interface VKoaOptions<ApiShape = any> {
 	useBodyParser?: boolean;
 	useCors?: boolean;
 	statics?: (string | StaticMount)[];
+
+	debug?: boolean;
+	logger?: Logger;
 
 	// Constrain inferred type to Endpoint map
 	get?: ApiShape extends {

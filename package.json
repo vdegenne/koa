@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.21",
+	"version": "0.1.22",
 	"type": "module",
 	"files": [
 		"./lib/"
@@ -29,19 +29,20 @@
 		}
 	},
 	"devDependencies": {
+		"@vdegenne/debug": "^0.1.16",
 		"@vdegenne/mini-rest": "^0.3.2",
-		"typescript": "^5.8.3",
+		"typescript": "^5.9.3",
 		"wireit": "^0.14.12"
 	},
 	"dependencies": {
 		"@koa/cors": "^5.0.0",
-		"@koa/router": "^13.1.0",
-		"@types/koa": "^2.15.0",
-		"@types/koa__cors": "^5.0.0",
-		"@types/koa__router": "^12.0.4",
+		"@koa/router": "^14.0.0",
+		"@types/koa": "^3.0.1",
+		"@types/koa__cors": "^5.0.1",
+		"@types/koa__router": "^12.0.5",
 		"@types/koa-mount": "^4.0.5",
 		"@types/koa-static": "^4.0.4",
-		"koa": "^3.0.0",
+		"koa": "^3.1.1",
 		"koa-mount": "^4.2.0",
 		"koa-static": "^5.0.0",
 		"mime": "^4.1.0"

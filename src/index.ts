@@ -13,6 +13,7 @@ import type {
 	RouteDefinitions,
 	VKoaOptions,
 } from './types.js';
+import {Logger} from '@vdegenne/debug';
 
 const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -21,18 +22,25 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const app = new Koa();
 	const router = new Router();
 
-	// app.use(async (ctx, next) => {
-	// 	try {
-	// 		await next();
-	// 	} catch (err) {
-	// 		if (options.onError) options.onError(err, ctx);
-	// 		else {
-	// 			ctx.status = ctx.status || 500;
-	// 			ctx.body = {error: (err as Error).message};
-	// 			console.error(err);
-	// 		}
-	// 	}
-	// });
+	const logger = options.logger ?? new Logger({prefix: ''});
+	const debug = options.debug ?? false;
+
+	app.use(async (ctx, next) => {
+		try {
+			await next();
+		} catch (err) {
+			if (options.onError) options.onError(err, ctx);
+			else {
+				ctx.status = ctx.status || 500;
+				ctx.body = (err as Error).message;
+				if (debug) {
+					logger.error(err);
+				}
+				// ctx.body = {error: (err as Error).message};
+				// console.error(err);
+			}
+		}
+	});
 
 	if (options.useBodyParser ?? true) app.use(bodyParser());
 	if (options.useCors ?? false) app.use(cors());
@@ -73,6 +81,9 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 
 			const wrappedMiddlewares = middlewares.map(
 				(middleware) => async (ctx: RequestContext, next: Next) => {
+					if (debug) {
+						logger.log(`ROUTE ${path} called`);
+					}
 					const guardManager = new FieldsGuard({ctx});
 					const guard = guardManager.check.bind(guardManager);
 					const params = ctx.params;
@@ -92,7 +103,9 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	app.use(router.routes()).use(router.allowedMethods());
 
 	app.listen(options.port, async () => {
-		console.log(`Server listening on http://localhost:${options.port}`);
+		logger.log(`Server listening on http://localhost:${options.port}`, {
+			alwaysLog: true,
+		});
 		if (options.onStart) await options.onStart();
 	});
 }
