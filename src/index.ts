@@ -25,24 +25,19 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const logger = options.logger ?? new Logger({prefix: ''});
 	const debug = options.debug ?? false;
 
-	app.use(async (ctx, next) => {
-		try {
-			await next();
-		} catch (err) {
-			console.log('?????????????????????????????????????????', ctx.status);
-			if (options.onError) options.onError(err, ctx);
-			else {
-				ctx.status = ctx.status || 500;
-				ctx.body = (err as Error).message;
-				if (debug) {
-					logger.error(`[error] status ${ctx.status}`);
-					logger.error((err as Error).message);
-				}
-				// ctx.body = {error: (err as Error).message};
-				// console.error(err);
-			}
-		}
-	});
+	// app.use(async (ctx, next) => {
+	// 	try {
+	// 		await next();
+	// 	} catch (err) {
+	// 		if (options.onError) options.onError(err, ctx);
+	// 		else {
+	// 			if (debug) {
+	// 				logger.error((err as Error).message);
+	// 			}
+	// 			throw err;
+	// 		}
+	// 	}
+	// });
 
 	if (options.useBodyParser ?? true) app.use(bodyParser());
 	if (options.useCors ?? false) app.use(cors());
@@ -81,6 +76,13 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				? (middlewareOrMiddlewares as Middleware[])
 				: [middlewareOrMiddlewares as Middleware];
 
+			function moreDebug(ctx: RequestContext) {
+				logger.log('Parameters:');
+				logger.log(ctx.params);
+				logger.log('Body:');
+				logger.log(ctx.request.body);
+			}
+
 			const wrappedMiddlewares = middlewares.map(
 				(middleware) => async (ctx: RequestContext, next: Next) => {
 					if (debug) {
@@ -89,7 +91,13 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 					const guardManager = new FieldsGuard({ctx});
 					const guard = guardManager.check.bind(guardManager);
 					const params = ctx.params;
-					const result = await middleware({ctx, next, guard, params});
+					const result = await middleware({
+						ctx,
+						next,
+						guard,
+						params,
+						debug: () => moreDebug(ctx),
+					});
 					if (result !== undefined && ctx.body === undefined) ctx.body = result;
 					if (ctx.body === undefined) {
 						// TODO: not sure about that

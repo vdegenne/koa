@@ -23,6 +23,10 @@ export type Middleware<Req = any, Res = any> = (opts: {
 	next: Next;
 	guard: FieldsGuard<Req>['check'];
 	params: Record<string, string>;
+	/**
+	 * Call that if you need more debug information like params
+	 */
+	debug: () => void;
 }) => Res | undefined | Promise<Res | undefined>;
 
 export type TypedRouteDefinitions<
