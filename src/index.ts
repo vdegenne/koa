@@ -34,7 +34,8 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				ctx.status = ctx.status || 500;
 				ctx.body = (err as Error).message;
 				if (debug) {
-					logger.error(err);
+					logger.error(`[error] status ${ctx.status}`);
+					logger.error((err as Error).message);
 				}
 				// ctx.body = {error: (err as Error).message};
 				// console.error(err);
