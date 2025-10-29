@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.22",
+	"version": "0.1.23",
 	"type": "module",
 	"files": [
 		"./lib/"
@@ -46,6 +46,9 @@
 		"koa-mount": "^4.2.0",
 		"koa-static": "^5.0.0",
 		"mime": "^4.1.0"
+	},
+	"peerDependencies": {
+		"@vdegenne/debug": "^0.1.16"
 	},
 	"scripts": {
 		"build": "wireit"
