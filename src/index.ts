@@ -1,5 +1,6 @@
 import cors from '@koa/cors';
 import Router from '@koa/router';
+import {Logger} from '@vdegenne/debug';
 import Koa from 'koa';
 import mount from 'koa-mount';
 import serve from 'koa-static';
@@ -13,7 +14,6 @@ import type {
 	RouteDefinitions,
 	VKoaOptions,
 } from './types.js';
-import {Logger} from '@vdegenne/debug';
 
 const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -114,7 +114,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 
 	app.listen(options.port, async () => {
 		logger.log(`Server listening on http://localhost:${options.port}`, {
-			alwaysLog: true,
+			force: true,
 		});
 		if (options.onStart) await options.onStart();
 	});
