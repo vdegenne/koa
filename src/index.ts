@@ -77,10 +77,12 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				: [middlewareOrMiddlewares as Middleware];
 
 			function moreDebug(ctx: RequestContext) {
-				logger.log('Parameters:');
-				logger.log(ctx.params);
-				logger.log('Body:');
-				logger.log(ctx.request.body);
+				if (debug) {
+					logger.log('Parameters:');
+					logger.log(ctx.params);
+					logger.log('Body:');
+					logger.log(ctx.request.body);
+				}
 			}
 
 			const wrappedMiddlewares = middlewares.map(
