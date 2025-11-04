@@ -26,7 +26,7 @@ export type Middleware<Req = any, Res = any> = (opts: {
 	/**
 	 * Call that if you need more debug information like params
 	 */
-	debug: () => void;
+	// debug: () => void;
 }) => Res | undefined | Promise<Res | undefined>;
 
 export type TypedRouteDefinitions<

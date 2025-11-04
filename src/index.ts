@@ -89,6 +89,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				(middleware) => async (ctx: RequestContext, next: Next) => {
 					if (debug) {
 						logger.log(`ROUTE ${path} called`);
+						moreDebug(ctx);
 					}
 					const guardManager = new FieldsGuard({ctx});
 					const guard = guardManager.check.bind(guardManager);
@@ -98,7 +99,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 						next,
 						guard,
 						params,
-						debug: () => moreDebug(ctx),
+						// debug: () => moreDebug(ctx),
 					});
 					if (result !== undefined && ctx.body === undefined) ctx.body = result;
 					if (ctx.body === undefined) {
