@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.36",
+	"version": "0.1.37",
 	"type": "module",
 	"files": [
 		"./lib/"

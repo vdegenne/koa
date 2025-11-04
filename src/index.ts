@@ -78,9 +78,11 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 
 			function moreDebug(ctx: RequestContext) {
 				if (debug) {
-					logger.log('Parameters:', ctx.params);
-					if (method !== 'get' && method !== 'delete') {
-						logger.log('Body:', ctx.request.body);
+					if (Object.keys(ctx.params).length) {
+						logger.debug('Parameters:', ctx.params);
+					}
+					if (Object.keys(ctx.request.body).length) {
+						logger.debug('Body:', ctx.request.body);
 					}
 				}
 			}
@@ -88,7 +90,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 			const wrappedMiddlewares = middlewares.map(
 				(middleware) => async (ctx: RequestContext, next: Next) => {
 					if (debug) {
-						logger.log(`ROUTE ${path} called`);
+						logger.debug(`(${method.toUpperCase()}) ${path} called`);
 						moreDebug(ctx);
 					}
 					const guardManager = new FieldsGuard({ctx});
