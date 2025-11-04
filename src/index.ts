@@ -78,10 +78,10 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 
 			function moreDebug(ctx: RequestContext) {
 				if (debug) {
-					logger.log('Parameters:');
-					logger.log(ctx.params);
-					logger.log('Body:');
-					logger.log(ctx.request.body);
+					logger.log('Parameters:', ctx.params);
+					if (method !== 'get' && method !== 'delete') {
+						logger.log('Body:', ctx.request.body);
+					}
 				}
 			}
 
