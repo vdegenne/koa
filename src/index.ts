@@ -116,9 +116,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	app.use(router.routes()).use(router.allowedMethods());
 
 	app.listen(options.port, async () => {
-		logger.log(`Server listening on http://localhost:${options.port}`, {
-			force: true,
-		});
+		logger.force('log', `Server listening on http://localhost:${options.port}`);
 		if (options.onStart) await options.onStart();
 	});
 }
