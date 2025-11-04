@@ -90,7 +90,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 			const wrappedMiddlewares = middlewares.map(
 				(middleware) => async (ctx: RequestContext, next: Next) => {
 					if (debug) {
-						logger.debug(`(${method.toUpperCase()})`, path, 'called');
+						logger.debug(`(${method.toUpperCase()})`, path);
 						moreDebug(ctx);
 					}
 					const guardManager = new FieldsGuard({ctx});
