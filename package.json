@@ -1,7 +1,7 @@
 {
 	"name": "@vdegenne/koa",
 	"description": "Koa tools and helpers in one package",
-	"version": "0.1.34",
+	"version": "0.1.35",
 	"type": "module",
 	"files": [
 		"./lib/"
@@ -29,7 +29,7 @@
 		}
 	},
 	"devDependencies": {
-		"@vdegenne/debug": "^0.1.27",
+		"@vdegenne/debug": "^0.1.28",
 		"@vdegenne/mini-rest": "^0.3.2",
 		"typescript": "^5.9.3",
 		"wireit": "^0.14.12"
