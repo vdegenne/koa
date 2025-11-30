@@ -14,6 +14,7 @@ import type {
 	RouteDefinitions,
 	VKoaOptions,
 } from './types.js';
+import chalk from 'chalk';
 
 const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 
@@ -25,19 +26,19 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const logger = options.logger ?? new Logger({prefix: ''});
 	const debug = options.debug ?? false;
 
-	// app.use(async (ctx, next) => {
-	// 	try {
-	// 		await next();
-	// 	} catch (err) {
-	// 		if (options.onError) options.onError(err, ctx);
-	// 		else {
-	// 			if (debug) {
-	// 				logger.error((err as Error).message);
-	// 			}
-	// 			throw err;
-	// 		}
-	// 	}
-	// });
+	app.use(async (ctx, next) => {
+		try {
+			await next();
+		} catch (err) {
+			if (options.onError) options.onError(err, ctx);
+			else {
+				if (debug) {
+					logger.debug(chalk.red((err as Error).message));
+				}
+				throw err;
+			}
+		}
+	});
 
 	if (options.useBodyParser ?? true) app.use(bodyParser());
 	if (options.useCors ?? false) app.use(cors());
@@ -90,17 +91,18 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 			const wrappedMiddlewares = middlewares.map(
 				(middleware) => async (ctx: RequestContext, next: Next) => {
 					if (debug) {
+						console.log(' ');
 						logger.debug(`(${method.toUpperCase()})`, path);
 						moreDebug(ctx);
 					}
 					const guardManager = new FieldsGuard({ctx});
 					const guard = guardManager.check.bind(guardManager);
-					const params = ctx.params;
 					const result = await middleware({
 						ctx,
 						next,
 						guard,
-						params,
+						params: ctx.params,
+						body: ctx.request.body,
 						// debug: () => moreDebug(ctx),
 					});
 					if (result !== undefined && ctx.body === undefined) ctx.body = result;
@@ -123,4 +125,4 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	});
 }
 
-export {bodyParser, cors, Koa, Router, serve};
+export {bodyParser, cors, Koa, Router, serve, mount};

@@ -23,6 +23,7 @@ export type Middleware<Req = any, Res = any> = (opts: {
 	next: Next;
 	guard: FieldsGuard<Req>['check'];
 	params: Record<string, string>;
+	body: RequestContext['request']['body'];
 	/**
 	 * Call that if you need more debug information like params
 	 */
