@@ -78,23 +78,23 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 				: [middlewareOrMiddlewares as Middleware];
 
 			function moreDebug(ctx: RequestContext) {
-				if (debug) {
-					if (Object.keys(ctx.params ?? {}).length) {
-						logger.debug('Parameters:', ctx.params);
-					}
-					if (Object.keys(ctx.request?.body ?? {}).length) {
-						logger.debug('Body:', ctx.request.body);
-					}
+				// if (debug) {
+				if (Object.keys(ctx.params ?? {}).length) {
+					logger.debug('Parameters:', ctx.params);
 				}
+				if (Object.keys(ctx.request?.body ?? {}).length) {
+					logger.debug('Body:', ctx.request.body);
+				}
+				// }
 			}
 
 			const wrappedMiddlewares = middlewares.map(
 				(middleware) => async (ctx: RequestContext, next: Next) => {
-					if (debug) {
-						console.log(' ');
-						logger.debug(`(${method.toUpperCase()})`, path);
-						moreDebug(ctx);
-					}
+					// if (debug) {
+					// 	console.log(' ');
+					// 	logger.debug(`(${method.toUpperCase()})`, path);
+					// 	moreDebug(ctx);
+					// }
 					const guardManager = new FieldsGuard({ctx});
 					const guard = guardManager.check.bind(guardManager);
 					const result = await middleware({
@@ -103,7 +103,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 						guard,
 						params: ctx.params,
 						body: ctx.request.body,
-						// debug: () => moreDebug(ctx),
+						debug: () => moreDebug(ctx),
 					});
 					if (result !== undefined && ctx.body === undefined) ctx.body = result;
 					if (ctx.body === undefined) {

@@ -2,7 +2,7 @@ import type {Context} from 'koa';
 import {RequestContext} from './types.js';
 
 interface GlobalOptions<T> {
-	fields: (keyof T)[];
+	fields: (keyof T)[] | undefined;
 	/**
 	 * @default false
 	 */
@@ -11,7 +11,7 @@ interface GlobalOptions<T> {
 }
 
 interface PostOptions<T, K extends keyof T> {
-	required: K[];
+	required?: K[];
 }
 
 type RequiredAndOptionalWithAlien<
@@ -27,7 +27,7 @@ export class FieldsGuard<T> {
 
 	constructor(options: Partial<GlobalOptions<T>>) {
 		this.#options = {
-			fields: [],
+			fields: undefined,
 			allowAlien: false,
 			ctx: undefined,
 			...options,
@@ -42,14 +42,15 @@ export class FieldsGuard<T> {
 		if (context === undefined) {
 			throw new Error('Context required');
 		}
-		const {required} = options;
-		const body = context.request.body as Record<string, unknown>;
 
+		const body = context.request.body as Record<string, unknown>;
 		if (body === undefined) {
 			throw new Error('No body found.');
 		}
 
-		for (const key of required) {
+		const {required} = options;
+
+		for (const key of required ?? []) {
 			if (!(key in body)) {
 				context.throw(400, `Missing required field: ${String(key)}`);
 			}
@@ -61,7 +62,11 @@ export class FieldsGuard<T> {
 		const result: Record<string, unknown> = {};
 
 		for (const key in body) {
-			if ((fields as string[]).includes(key) || allowAlien) {
+			if (
+				fields === undefined ||
+				(fields as string[]).includes(key) ||
+				allowAlien
+			) {
 				result[key] = body[key];
 			} else {
 				context.throw(400, `Invalid field: ${key}`);
@@ -69,8 +74,10 @@ export class FieldsGuard<T> {
 		}
 
 		// ensure all declared fields that exist in body are included
-		for (const key of fields) {
-			if (key in body) result[key as string] = body[key as string];
+		if (fields !== undefined) {
+			for (const key of fields) {
+				if (key in body) result[key as string] = body[key as string];
+			}
 		}
 
 		return result as RequiredAndOptionalWithAlien<T, K, AllowAlien>;
