@@ -21,6 +21,8 @@ const methods: HttpMethod[] = ['get', 'post', 'put', 'patch', 'delete'];
 // TODO: accept an array of configs instead of one
 export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	const app = new Koa();
+	// TODO: Make this false and give an option
+	app.proxy = true;
 	const router = new Router();
 
 	const logger = options.logger ?? new Logger({prefix: ''});
