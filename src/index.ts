@@ -56,11 +56,11 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 	if (options.middlewares)
 		for (const m of options.middlewares) {
 			if (!m) return;
-			if (options.apiVersion) {
-				app.use(mount(`/${options.apiVersion}`, m));
-			} else {
-				app.use(m);
-			}
+			// if (options.apiVersion) {
+			// 	app.use(mount(`/${options.apiVersion}`, m));
+			// } else {
+			app.use(m);
+			// }
 		}
 
 	for (const method of methods) {
@@ -115,6 +115,9 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 					// await next();
 				},
 			);
+			if (method === 'delete') {
+				console.log(router[method]);
+			}
 			router[method](path, ...wrappedMiddlewares);
 		}
 	}

@@ -1,4 +1,3 @@
-import type {Context} from 'koa';
 import {RequestContext} from './types.js';
 
 interface GlobalOptions<T> {
@@ -48,22 +47,23 @@ export class FieldsGuard<T> {
 			throw new Error('No body found.');
 		}
 
-		const {required} = options;
+		const {required = []} = options;
 
-		for (const key of required ?? []) {
+		for (const key of required) {
 			if (!(key in body)) {
 				context.throw(400, `Missing required field: ${String(key)}`);
+				throw 1; // The throw above will stop the execution anyway but just in dcase.
 			}
 		}
 
-		const fields = options.fields ?? this.#options.fields;
+		const fields = options.fields ?? this.#options.fields ?? required;
 		const allowAlien = options.allowAlien ?? this.#options.allowAlien;
 
 		const result: Record<string, unknown> = {};
 
 		for (const key in body) {
 			if (
-				fields === undefined ||
+				// fields === undefined ||
 				(fields as string[]).includes(key) ||
 				allowAlien
 			) {

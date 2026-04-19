@@ -4,23 +4,23 @@ import fs from 'node:fs';
 import pathlib from 'node:path';
 import type {Context, Next} from '../types.js';
 
-import net from 'net';
-
-const origEmit = (net.Socket.prototype as any).emit;
-
-(net.Socket.prototype as any).emit = function (event: any, ...args: any[]) {
-	const err = args[0];
-
-	if (
-		event === 'error' &&
-		(err.code === 'ECONNRESET' || err.code === 'EPIPE')
-	) {
-		return false;
-	}
-
-	// appel original
-	return origEmit.apply(this, arguments);
-};
+// import net from 'net';
+//
+// const origEmit = (net.Socket.prototype as any).emit;
+//
+// (net.Socket.prototype as any).emit = function (event: any, ...args: any[]) {
+// 	const err = args[0];
+//
+// 	if (
+// 		event === 'error' &&
+// 		(err.code === 'ECONNRESET' || err.code === 'EPIPE')
+// 	) {
+// 		return false;
+// 	}
+//
+// 	// appel original
+// 	return origEmit.apply(this, arguments);
+// };
 
 // TODO: make this an option in the future
 const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.ogg', '.mkv'];
