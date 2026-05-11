@@ -115,9 +115,7 @@ export function config<ApiShape = any>(options: VKoaOptions<ApiShape>) {
 					// await next();
 				},
 			);
-			if (method === 'delete') {
-				console.log(router[method]);
-			}
+
 			router[method](path, ...wrappedMiddlewares);
 		}
 	}
